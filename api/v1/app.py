@@ -27,8 +27,10 @@ def handle_404(exception):
     data = {
         "error": "Not found"
     }
+    resp = jsonify(data)
+    resp.status_code = 404
 
-    return jsonify(data)
+    return resp
 
 
 if __name__ == "__main__":
