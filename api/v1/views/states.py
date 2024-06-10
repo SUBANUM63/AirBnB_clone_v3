@@ -8,18 +8,18 @@ from models import storage
 from models.state import State
 
 
-@app_views.route("/states", methods=["GET"], strict_slashes=False)
+@app_views.route("/states", methods=['GET'], strict_slashes=False)
 def state_get_all():
     """
     retrieves all State objects
     :return: json of all states
     """
-    states = storage.all("State").values()
+    states = storage.all(State).values()
     state_list = [state.to_dict() for state in states]
     return jsonify(state_list)
 
 
-@app_views.route("/states", methods=["POST"], strict_slashes=False)
+@app_views.route("/states", methods=['POST'], strict_slashes=False)
 def create_state():
     """
     create state route
@@ -37,20 +37,20 @@ def create_state():
     return jsonify(new_state.to_dict()), 200
 
 
-@app_views.route("/states/<state_id>", methods=["GET"], strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=['GET'], strict_slashes=False)
 def get_state(state_id):
     """
     gets a specific State object by ID
     :param state_id: state object id
     :return: state obj with the specified id or error
     """
-    state = storage.get("State", state_id)
+    state = storage.get(State, str(state_id))
     if state:
         return jsonify(state.to_dict())
     return abort(404)
 
 
-@app_views.route("/states/<state_id>", methods=["PUT"], strict_slashes=False)
+@app_views.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
     """
     updates specific State object by ID
@@ -59,7 +59,7 @@ def update_state(state_id):
     """
     if request.content_type != 'application/json':
         return abort(400, 'Not a JSON')
-    state = storage.get("State", state_id)
+    state = storage.get(State, str(state_id))
 
     if state:
         if not request.get_json():
@@ -72,7 +72,7 @@ def update_state(state_id):
         return jsonify(state.to_dict()), 200
 
 
-@app_views.route("/states/<state_id>", methods=["DELETE"],
+@app_views.route("/states/<state_id>", methods=['DELETE'],
                  strict_slashes=False)
 def delete_state(state_id):
     """
@@ -80,7 +80,7 @@ def delete_state(state_id):
     :param state_id: state object id
     :return: empty dict with 200 or 404 if not found
     """
-    state = storage.get("State", state_id)
+    state = storage.get(State, str(state_id))
     if state:
         storage.delete(state)
         storage.save()

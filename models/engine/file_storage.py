@@ -72,7 +72,7 @@ class FileStorage:
     def get(self, cls, id):
         """Retrieves an object based on its class and ID"""
         if id and isinstance(id, str):
-            if cls and cls in classes.values():
+            if cls and (cls in classes.values() or cls in classes.keys()):
                 all_objs = self.all(cls)
                 for key, value in all_objs.items():
                     if id == value.id and key.split('.')[1] == id:
