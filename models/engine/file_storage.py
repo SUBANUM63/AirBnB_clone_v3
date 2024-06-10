@@ -86,7 +86,7 @@ class FileStorage:
         """
         no_objects = 0
         if cls:
-            if cls in classes.values():
+            if cls in classes.values() or cls in classes.keys():
                 no_objects = len(self.all(cls))
             else:
                 return no_objects

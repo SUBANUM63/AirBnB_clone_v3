@@ -95,7 +95,7 @@ class DBStorage:
         """
         total_objects = 0
         if cls:
-            if cls in classes.values():
+            if cls in classes.values() or cls in classes.keys():
                 total_objects = len(self.all(cls))
         if not cls:
             total_objects = len(self.all())
