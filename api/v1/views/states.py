@@ -28,10 +28,10 @@ def create_state():
     # if request.content_type != 'application/json':
     #     return abort(404, 'Not a JSON')
     kwargs = request.get_json()
-    if kwargs:
+    if not kwargs:
         return abort(400, 'Not a JSON')
     if "name" not in kwargs:
-        abort(400, 'Missing name')
+        return abort(400, 'Missing name')
     new_state = State(**kwargs)
     new_state.save()
     return jsonify(new_state.to_dict()), 201
