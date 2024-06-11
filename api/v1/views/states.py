@@ -25,8 +25,8 @@ def create_state():
     create state route
     :return: newly created state obj
     """
-    # if request.content_type != 'application/json':
-    #     return abort(404, 'Not a JSON')
+    if not request.is_json:
+        return abort(400, 'Not a JSON')
     kwargs = request.get_json()
     if not kwargs:
         return abort(400, 'Not a JSON')
@@ -46,9 +46,9 @@ def get_state(state_id):
     :return: state obj with the specified id or error
     """
     state = storage.get(State, state_id)
-    if state:
-        return jsonify(state.to_dict())
-    return abort(404)
+    if not state:
+        abort(404)
+    return jsonify(state.to_dict())
 
 
 @app_views.route("/states/<string:state_id>", methods=['PUT'],
@@ -59,12 +59,12 @@ def update_state(state_id):
     :param state_id: state object ID
     :return: state object and 200 on success, or 400 or 404 on failure
     """
-    if request.content_type != 'application/json':
-        return abort(400, 'Not a JSON')
+    if not request.is_json:
+        return abort(400, "Not a JSON")
     state = storage.get(State, state_id)
     if state:
         if not request.get_json():
-            return abort(400, 'Not a JSON')
+            abort(400, 'Not a JSON')
         data = request.get_json()
         for key, val in data.items():
             if key not in ["id", "created_at", "updated_at"]:
