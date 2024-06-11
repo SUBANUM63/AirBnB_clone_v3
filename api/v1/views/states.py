@@ -25,8 +25,8 @@ def create_state():
     create state route
     :return: newly created state obj
     """
-    if request.content_type != 'application/json':
-        return abort(404, 'Not a JSON')
+    # if request.content_type != 'application/json':
+    #     return abort(404, 'Not a JSON')
     kwargs = request.get_json()
     if kwargs:
         return abort(400, 'Not a JSON')
@@ -34,23 +34,23 @@ def create_state():
         abort(400, 'Missing name')
     new_state = State(**kwargs)
     new_state.save()
-    return jsonify(new_state.to_dict()), 200
+    return jsonify(new_state.to_dict()), 201
 
 
-@app_views.route("/states/<state_id>", methods=['GET'], strict_slashes=False)
+@app_views.route("/states/<string:state_id>", methods=['GET'], strict_slashes=False)
 def get_state(state_id):
     """
     gets a specific State object by ID
     :param state_id: state object id
     :return: state obj with the specified id or error
     """
-    state = storage.get(State, str(state_id))
+    state = storage.get(State, state_id)
     if state:
         return jsonify(state.to_dict())
     return abort(404)
 
 
-@app_views.route("/states/<state_id>", methods=['PUT'], strict_slashes=False)
+@app_views.route("/states/<string:state_id>", methods=['PUT'], strict_slashes=False)
 def update_state(state_id):
     """
     updates specific State object by ID
@@ -59,8 +59,7 @@ def update_state(state_id):
     """
     if request.content_type != 'application/json':
         return abort(400, 'Not a JSON')
-    state = storage.get(State, str(state_id))
-
+    state = storage.get(State, state_id)
     if state:
         if not request.get_json():
             return abort(400, 'Not a JSON')
@@ -70,17 +69,18 @@ def update_state(state_id):
                 setattr(state, key, val)
         state.save()
         return jsonify(state.to_dict()), 200
+    else:
+        abort(404)
 
 
-@app_views.route("/states/<state_id>", methods=['DELETE'],
-                 strict_slashes=False)
+@app_views.route("/states/<string:state_id>", methods=['DELETE'], strict_slashes=False)
 def delete_state(state_id):
     """
     deletes State by id
     :param state_id: state object id
     :return: empty dict with 200 or 404 if not found
     """
-    state = storage.get(State, str(state_id))
+    state = storage.get(State, state_id)
     if state:
         storage.delete(state)
         storage.save()
